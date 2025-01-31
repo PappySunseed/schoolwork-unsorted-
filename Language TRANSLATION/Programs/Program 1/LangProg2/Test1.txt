@@ -1,0 +1,11 @@
+Token number 	33		Token type 	ERROR		Actual token 	
+
+Token number 	11		Token type 	ID		Actual token 	A
+Token number 	30		Token type 	EQUALOP		Actual token 	=
+Token number 	11		Token type 	ID		Actual token 	BB
+Token number 	33		Token type 	ERROR		Actual token 	&
+Token number 	11		Token type 	ID		Actual token 	A
+Token number 	33		Token type 	ERROR		Actual token 	
+
+Token number 	11		Token type 	ID		Actual token 	END
+Token number 	-1		Token type 	__No such token__		Actual token 	

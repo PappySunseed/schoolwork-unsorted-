@@ -1,0 +1,24 @@
+Expected Token: BEGIN	Actual Token: BEGIN
+
+Statement: BEGIN
+
+
+Expected Token: READ	Actual Token: READ
+Expected Token: LPAREN	Actual Token: (
+Expected Token: ID	Actual Token: A
+Expected Token: COMMA	Actual Token: ,
+Expected Token: ID	Actual Token: BB
+Expected Token: RPAREN	Actual Token: )
+Expected Token: SEMICOLON	Actual Token: ;
+
+Statement: READ(A,BB);
+
+
+Expected Token: ID	Actual Token: X
+Expected Token: ASSIGNOP	Actual Token: :=
+Expected Token: ID	Actual Token: A
+Expected Token: PLUSOP	Actual Token: +
+Expected Token: PLUSOP	Actual Token: BB
+Expected Token: SEMICOLON	Actual Token: ;
+Expected Token: END	Actual Token: Y
+Expected Token: SCANEOF	Actual Token: :=

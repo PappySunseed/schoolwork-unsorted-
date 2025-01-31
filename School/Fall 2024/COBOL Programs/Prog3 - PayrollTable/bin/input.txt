@@ -1,0 +1,10 @@
+John      Smith          44571575
+Alice     Johnson        45122050
+Robert    Brown          50201275
+Mary      Davis          40181890
+Michael   Miller         55472225
+Linda     Wilson         40251430
+William   Moore          40100950
+Elizabeth Taylor         42552380
+David     Anderson       45001745
+Susan     Thomas         60002500

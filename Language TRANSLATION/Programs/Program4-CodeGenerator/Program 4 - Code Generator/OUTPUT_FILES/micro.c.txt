@@ -1,0 +1,11 @@
+/*
+File Path: C:\Users\caleb\OneDrive\Desktop\Language TRANSLATION\Programs\Program4-CodeGenerator\Program 4 - Code Generator\
+Last modification date: Tue Apr 16 10:28:47 2024
+ */
+#include<stdio.h>
+main()
+{
+scanf("%d%d", A,BB);
+printf("%d%d%d%d", A,BB,X,Y);
+printf("%d%d%d", A,5,X);
+printf("%d%d%d", BB,5,X);

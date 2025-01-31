@@ -1,0 +1,14 @@
+1.  BEGIN
+2.  READ(A,BB);
+4.  X:=A+BB;
+6.  Y:=A-BB;
+8.  WRITE(A,BB,X,Y);
+10.  X:=A-5;
+12.  WRITE(A,5,X);
+14.  X:=BB*---5;
+16.  WRITE(BB,5,X);
+18.  INF(!(A
+
+Lexical errors: 0
+Syntactic errors: 4
+Total errors: 4

@@ -1,0 +1,5 @@
+refresh yourself on prefix and postfix notation
+
+use the book for the assembler irvine library and ms visual studio \
+
+kip irvine x86 assembly

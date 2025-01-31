@@ -1,0 +1,854 @@
+Microsoft (R) Macro Assembler Version 14.29.30153.0	    04/06/24 14:24:58
+G1P4 Network Simulato					     Page 1 - 1
+
+
+				Include Irvine32.inc
+			      C ; Include file for Irvine32.lib             (Irvine32.inc)
+			      C 
+			      C ;OPTION CASEMAP:NONE		; optional: make identifiers case-sensitive
+			      C 
+			      C INCLUDE SmallWin.inc		; MS-Windows prototypes, structures, and constants
+			      C .NOLIST
+			      C .LIST
+			      C 
+			      C INCLUDE VirtualKeys.inc
+			      C ; VirtualKeys.inc
+			      C .NOLIST
+			      C .LIST
+			      C 
+			      C 
+			      C .NOLIST
+			      C .LIST
+			      C 
+
+				title G1P4 Network Simulator
+
+				;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				;(CMSC-3100-001 Spring 2024) WRITTEN BY
+				;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				; Allan Cunningham  | cun82935@pennwest.edu
+				; Caleb Ruby        |  rub4133@pennwest.edu
+				; Evan Thompson     | tho86271@pennwest.edu
+				;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ 00000000			.data
+				;~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				;DEFINING PACKET DATA OFFSETS
+				;~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ = 00000000			Destination equ 0
+ = 00000001			Sender equ 1
+ = 00000002			Origin equ 2
+ = 00000003			TTL equ 3
+ = 00000004			Received equ 4
+ = 00000006			PacketSize equ 6
+
+ = 00000000			Connection equ 0 ; offset to pointer to the connected node
+ = 00000004			XMT equ 4 ; offset to the transmit buffer pointer
+ = 00000008			RCV equ 8 ; offset to receive buffer pointer
+
+ = 0000000A			QueueSize equ 10
+
+				;~~~~~~~~
+				;MESSAGES
+				;~~~~~~~~
+ 00000000 4E 6F 64 65 3A	current_node BYTE "Node:  ", 0
+	   20 20 00
+ 00000008 43 6F 6E 6E 65	is_connected_to BYTE "Connected to  ", 0
+	   63 74 65 64 20
+	   74 6F 20 20 00
+
+				;~~~~~~~~~~~~~~~~~~~~~~~~
+				;DEFINING TRANSMIT QUEUES
+				;~~~~~~~~~~~~~~~~~~~~~~~~
+				; Transmit Queues
+ 00000017  0000003C [		QueueA BYTE QueueSize*PacketSize dup(0) ; space for Queue A
+	    00
+	   ]
+ 00000053  0000003C [		QueueB BYTE QueueSize*PacketSize dup(0) ; space for Queue B
+	    00
+	   ]
+ 0000008F  0000003C [		QueueC BYTE QueueSize*PacketSize dup(0) ; space for Queue C
+	    00
+	   ]
+ 000000CB  0000003C [		QueueD BYTE QueueSize*PacketSize dup(0) ; space for Queue D
+	    00
+	   ]
+ 00000107  0000003C [		QueueE BYTE QueueSize*PacketSize dup(0) ; space for Queue E
+	    00
+	   ]
+ 00000143  0000003C [		QueueF BYTE QueueSize*PacketSize dup(0) ; space for Queue F
+	    00
+	   ]
+
+				;~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				;DEFINING BUFFERS FOR PACKETS
+				;~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				; Buffers for node A
+ 0000017F			AXMTB label BYTE ; A transmit buffer to B label to a byte space
+ 0000017F  00000006 [		BRCVA BYTE PacketSize dup(0) ; B receive buffer from A PacketSize bytes
+	    00
+	   ]
+ 00000185			AXMTE label BYTE ; A transmit buffer to E label to a byte space
+ 00000185  00000006 [		ERCVA BYTE PacketSize dup(0) ; E receive buffer from A PacketSize bytes
+	    00
+	   ]
+
+				; Buffers for node B
+ 0000018B			BXMTA label BYTE ; B transmit buffer to A label to a byte space
+ 0000018B  00000006 [		ARCVB BYTE PacketSize dup(0) ; A receive buffer from B PacketSize bytes
+	    00
+	   ]
+ 00000191			BXMTC label BYTE ; B transmit buffer to C label to a byte space
+ 00000191  00000006 [		CRCVB BYTE PacketSize dup(0) ; C receive buffer from B PacketSize bytes
+	    00
+	   ]
+ 00000197			BXMTF label BYTE ; B transmit buffer to F label to a byte space
+ 00000197  00000006 [		FRCVB BYTE PacketSize dup(0) ; F receive buffer from B PacketSize bytes
+	    00
+	   ]
+
+				; Buffers for node C
+ 0000019D			CXMTB label BYTE ; C transmit buffer to B label to a byte space
+ 0000019D  00000006 [		BRCVC BYTE PacketSize dup(0) ; B receive buffer from C PacketSize bytes
+	    00
+	   ]
+ 000001A3			CXMTD label BYTE ; C transmit buffer to D label to a byte space
+ 000001A3  00000006 [		DRCVC BYTE PacketSize dup(0) ; D receive buffer from C PacketSize bytes
+	    00
+	   ]
+ 000001A9			CXMTE label BYTE ; C transmit buffer to E label to a byte space
+ 000001A9  00000006 [		ERCVC BYTE PacketSize dup(0) ; E receive buffer from C PacketSize bytes
+	    00
+	   ]
+
+				; Buffers for node D
+ 000001AF			DXMTC label BYTE ; D transmit buffer to C label to a byte space
+ 000001AF  00000006 [		CRCVD BYTE PacketSize dup(0) ; C receive buffer from D PacketSize bytes
+	    00
+	   ]
+ 000001B5			DXMTF label BYTE ; D transmit buffer to F label to a byte space
+ 000001B5  00000006 [		FRCVD BYTE PacketSize dup(0) ; F receive buffer from D PacketSize bytes
+	    00
+	   ]
+
+				; Buffers for node E
+ 000001BB			EXMTA label BYTE ; E transmit buffer to A label to a byte space
+ 000001BB  00000006 [		ARCVE BYTE PacketSize dup(0) ; A receive buffer from E PacketSize bytes
+	    00
+	   ]
+ 000001C1			EXMTC label BYTE ; E transmit buffer to C label to a byte space
+ 000001C1  00000006 [		CRCVE BYTE PacketSize dup(0) ; C receive buffer from E PacketSize bytes
+	    00
+	   ]
+ 000001C7			EXMTF label BYTE ; E transmit buffer to F label to a byte space
+ 000001C7  00000006 [		FRCVE BYTE PacketSize dup(0) ; F receive buffer from E PacketSize bytes
+	    00
+	   ]
+
+				; Buffers for node F
+ 000001CD			FXMTB label BYTE ; F transmit buffer to B label to a byte space
+ 000001CD  00000006 [		BRCVF BYTE PacketSize dup(0) ; B receive buffer from F PacketSize bytes
+	    00
+	   ]
+ 000001D3			FXMTE label BYTE ; F transmit buffer to E label to a byte space
+ 000001D3  00000006 [		ERCVF BYTE PacketSize dup(0) ; E receive buffer from F PacketSize bytes
+	    00
+	   ]
+ 000001D9			FXMTD label BYTE ; F transmit buffer to D label to a byte space
+ 000001D9  00000006 [		DRCVF BYTE PacketSize dup(0) ; D receive buffer from F PacketSize bytes
+	    00
+	   ]
+
+				;~~~~~~~~~~~~~~~~~~~~~
+				;OFFSETS FOR NODE DATA
+				;~~~~~~~~~~~~~~~~~~~~~
+ = 00000001			NumConnectionsOffset equ 1 ; Offset for number of connections in a node
+ = 00000000			NameOffset equ 0
+ = 00000006			NodePositionOffset equ sizeof current_node - 2
+ = 0000000D			ConnectionPositionOffset equ sizeof is_connected_to - 2
+
+				;~~~~~~~~~~~~~~~~~~~~~~~~~
+				;FIXED SIZES FOR NODE DATA
+				;~~~~~~~~~~~~~~~~~~~~~~~~~
+ = 0000000C			ConnectionSize equ 12
+ = 0000000E			NodeMinimunSize equ 14
+
+				;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				;DEFINING NETWORK NODE STRUCTURES
+				;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 000001DF			Network label byte ;entry to start of network
+				; Node structure for node A
+ 000001DF 41			NodeA BYTE 'A'
+ 000001E0  02			    BYTE 2 ; Number of connections
+ 000001E1  00000017 R		    DWORD QueueA ; Address of Queue A
+ 000001E5  00000017 R		    DWORD QueueA ; In Pointer initialized to Queue A
+ 000001E9  00000017 R		    DWORD QueueA ; Out pointer initialized to Queue A
+				    ; Connection information
+				    ; Connection 1: A to B
+ 000001ED  00000205 R		    DWORD NodeB ; Pointer to connected node (B)
+ 000001F1  0000017F R		    DWORD AXMTB ; Pointer to transmit buffer from A to B
+ 000001F5  0000017F R		    DWORD BRCVA ; Pointer to receive buffer from B to A
+				    ; Connection 2: A to E
+ 000001F9  0000028F R		    DWORD NodeE ; Pointer to connected node (E)
+ 000001FD  00000185 R		    DWORD AXMTE ; Pointer to transmit buffer from A to E
+ 00000201  00000185 R		    DWORD ERCVA ; Pointer to receive buffer from E to A
+
+				; Node structure for node B
+ 00000205 42			NodeB BYTE 'B'
+ 00000206  03			    BYTE 3 ; Number of connections
+ 00000207  00000053 R		    DWORD QueueB ; Address of Queue B
+ 0000020B  00000053 R		    DWORD QueueB ; In Pointer initialized to Queue B
+ 0000020F  00000053 R		    DWORD QueueB ; Out pointer initialized to Queue B
+				    ; Connection information
+				    ; Connection 1: B to A
+ 00000213  000001DF R		    DWORD NodeA ; Pointer to connected node (A)
+ 00000217  0000018B R		    DWORD BXMTA ; Pointer to transmit buffer from B to A
+ 0000021B  0000018B R		    DWORD ARCVB ; Pointer to receive buffer from A to B
+				    ; Connection 2: B to C
+ 0000021F  00000237 R		    DWORD NodeC ; Pointer to connected node (C)
+ 00000223  00000191 R		    DWORD BXMTC ; Pointer to transmit buffer from B to C
+ 00000227  00000191 R		    DWORD CRCVB ; Pointer to receive buffer from C to B
+				    ; Connection 3: B to F
+ 0000022B  000002C1 R		    DWORD NodeF ; Pointer to connected node (F)
+ 0000022F  00000197 R		    DWORD BXMTF ; Pointer to transmit buffer from B to F
+ 00000233  00000197 R		    DWORD FRCVB ; Pointer to receive buffer from F to B
+
+				; Node structure for node C
+ 00000237 43			NodeC BYTE 'C'
+ 00000238  03			    BYTE 3 ; Number of connections
+ 00000239  0000008F R		    DWORD QueueC ; Address of Queue C
+ 0000023D  0000008F R		    DWORD QueueC ; In Pointer initialized to Queue C
+ 00000241  0000008F R		    DWORD QueueC ; Out pointer initialized to Queue C
+				    ; Connection information
+				    ; Connection 1: C to B
+ 00000245  00000205 R		    DWORD NodeB ; Pointer to connected node (B)
+ 00000249  0000019D R		    DWORD CXMTB ; Pointer to transmit buffer from C to B
+ 0000024D  0000019D R		    DWORD BRCVC ; Pointer to receive buffer from B to C
+				    ; Connection 2: C to D
+ 00000251  00000269 R		    DWORD NodeD ; Pointer to connected node (D)
+ 00000255  000001A3 R		    DWORD CXMTD ; Pointer to transmit buffer from C to D
+ 00000259  000001A3 R		    DWORD DRCVC ; Pointer to receive buffer from D to C
+				    ; Connection 3: C to E
+ 0000025D  0000028F R		    DWORD NodeE ; Pointer to connected node (E)
+ 00000261  000001A9 R		    DWORD CXMTE ; Pointer to transmit buffer from C to E
+ 00000265  000001A9 R		    DWORD ERCVC ; Pointer to receive buffer from E to C
+
+				; Node structure for node D
+ 00000269 44			NodeD BYTE 'D'
+ 0000026A  02			    BYTE 2 ; Number of connections
+ 0000026B  000000CB R		    DWORD QueueD ; Address of Queue D
+ 0000026F  000000CB R		    DWORD QueueD ; In Pointer initialized to Queue D
+ 00000273  000000CB R		    DWORD QueueD ; Out pointer initialized to Queue D
+				    ; Connection information
+				    ; Connection 1: D to C
+ 00000277  00000237 R		    DWORD NodeC ; Pointer to connected node (C)
+ 0000027B  000001AF R		    DWORD DXMTC ; Pointer to transmit buffer from D to C
+ 0000027F  000001AF R		    DWORD CRCVD ; Pointer to receive buffer from C to D
+				    ; Connection 2: D to F
+ 00000283  000002C1 R		    DWORD NodeF ; Pointer to connected node (F)
+ 00000287  000001B5 R		    DWORD DXMTF ; Pointer to transmit buffer from D to F
+ 0000028B  000001B5 R		    DWORD FRCVD ; Pointer to receive buffer from F to D
+
+				; Node structure for node E
+ 0000028F 45			NodeE BYTE 'E'
+ 00000290  03			    BYTE 3 ; Number of connections
+ 00000291  00000107 R		    DWORD QueueE ; Address of Queue E
+ 00000295  00000107 R		    DWORD QueueE ; In Pointer initialized to Queue E
+ 00000299  00000107 R		    DWORD QueueE ; Out pointer initialized to Queue E
+				    ; Connection information
+				    ; Connection 1: E to A
+ 0000029D  000001DF R		    DWORD NodeA ; Pointer to connected node (A)
+ 000002A1  000001BB R		    DWORD EXMTA ; Pointer to transmit buffer from E to A
+ 000002A5  000001BB R		    DWORD ARCVE ; Pointer to receive buffer from A to E
+				    ; Connection 2: E to C
+ 000002A9  00000237 R		    DWORD NodeC ; Pointer to connected node (C)
+ 000002AD  000001C1 R		    DWORD EXMTC ; Pointer to transmit buffer from E to C
+ 000002B1  000001C1 R		    DWORD CRCVE ; Pointer to receive buffer from C to E
+				    ; Connection 3: E to F
+ 000002B5  000002C1 R		    DWORD NodeF ; Pointer to connected node (F)
+ 000002B9  000001C7 R		    DWORD EXMTF ; Pointer to transmit buffer from E to F
+ 000002BD  000001C7 R		    DWORD FRCVE ; Pointer to receive buffer from F to E
+
+				; Node structure for node F
+ 000002C1 46			NodeF BYTE 'F'
+ 000002C2  03			    BYTE 3 ; Number of connections
+ 000002C3  00000143 R		    DWORD QueueF ; Address of Queue F
+ 000002C7  00000143 R		    DWORD QueueF ; In Pointer initialized to Queue F
+ 000002CB  00000143 R		    DWORD QueueF ; Out pointer initialized to Queue F
+				    ; Connection information
+				    ; Connection 1: F to B
+ 000002CF  00000205 R		    DWORD NodeB ; Pointer to connected node (B)
+ 000002D3  000001CD R		    DWORD FXMTB ; Pointer to transmit buffer from F to B
+ 000002D7  000001CD R		    DWORD BRCVF ; Pointer to receive buffer from B to F
+				    ; Connection 2: F to D
+ 000002DB  00000269 R		    DWORD NodeD ; Pointer to connected node (D)
+ 000002DF  000001D9 R		    DWORD FXMTD ; Pointer to transmit buffer from F to D
+ 000002E3  000001D9 R		    DWORD DRCVF ; Pointer to receive buffer from D to F
+				    ; Connection 3: F to E
+ 000002E7  0000028F R		    DWORD NodeE ; Pointer to connected node (E)
+ 000002EB  000001D3 R		    DWORD FXMTE ; Pointer to transmit buffer from F to E
+ 000002EF  000001D3 R		    DWORD ERCVF ; Pointer to receive buffer from E to F
+ 000002F3 000002F3 R		    endofnodes DWORD endofnodes
+
+ 00000000			.code
+
+ 00000000			main PROC
+
+				    ; Initialize ESI with the address of the first node
+ 00000000  BF 000001DF R	    mov edi, OFFSET Network
+
+				    ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				    ;MAIN LOOP PRINTING EACH NODE
+				    ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 00000005			    mainloop:
+ 00000005  BA 00000000 R	    mov edx, OFFSET current_node ; Node: message
+ 0000000A  B9 00000008		    mov ecx, sizeof current_node ; get size of message
+ 0000000F  8A 07		    mov al, NameOffset[edi] ; get node name
+ 00000011  88 42 06		    mov NodePositionOffset[edx], al ; put node name into end of message
+ 00000014  E8 00000000 E	    call WriteString ; print message
+ 00000019  E8 00000000 E	    call Crlf
+
+ 0000001E  BB 00000000		    mov ebx, 0 ; initialize connection counter
+
+				    ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				    ;CONNECTION LOOP PRINTING EACH NODE'S CONNECTIONS
+				    ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 00000023			    connectionloop:
+ 00000023  B8 0000000C		    mov eax, ConnectionSize ; get connection size
+ 00000028  F6 E3		    mul bl ; multiply by connection index
+ 0000002A  8B 74 07 0E		    mov esi, NodeMinimunSize[edi + eax] ; get connection address
+ 0000002E  BA 00000008 R	    mov edx, OFFSET is_connected_to
+ 00000033  B9 0000000F		    mov ecx, sizeof is_connected_to
+ 00000038  8A 06		    mov al, NameOffset[esi] ; get connection node name
+ 0000003A  88 42 0D		    mov ConnectionPositionOffset[edx], al ; put node name into end of message
+ 0000003D  E8 00000000 E	    call WriteString ; print message
+ 00000042  E8 00000000 E	    call Crlf
+ 00000047  43			    inc ebx
+ 00000048  3A 5F 01		    cmp bl, NumConnectionsOffset[edi]
+ 0000004B  7C D6		    jl connectionloop
+
+ 0000004D  B8 00000000		    mov eax, 0 ; clear eax
+ 00000052  8A 47 01		    mov al, NumConnectionsOffset[edi] ; get number of connections
+ 00000055  B1 0C		    mov cl, ConnectionSize ; get size of each connection
+ 00000057  F6 E1		    mul cl ; determine size of all connections
+ 00000059  83 C7 0E		    add edi, NodeMinimunSize ; move to connection space of structure
+ 0000005C  03 F8		    add edi, eax ; offset esi over all connections to next node
+ 0000005E  3B 3D 000002F3 R	    cmp edi, endofnodes ; test for end of nodes
+ 00000064  7C 9F		    jl mainloop ; process next node
+ 00000066			    endmain:
+				    
+				    exit
+ 00000066  6A 00	   *	    push   +000000000h
+ 00000068  E8 00000000 E   *	    call   ExitProcess
+ 0000006D			main ENDP
+
+				end main
+Microsoft (R) Macro Assembler Version 14.29.30153.0	    04/06/24 14:24:58
+G1P4 Network Simulato					     Symbols 2 - 1
+
+
+
+
+Structures and Unions:
+
+                N a m e                  Size
+                                         Offset      Type
+
+CONSOLE_CURSOR_INFO  . . . . . .	 00000008
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+  bVisible . . . . . . . . . . .	 00000004	 DWord
+CONSOLE_SCREEN_BUFFER_INFO . . .	 00000016
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+  dwCursorPosition . . . . . . .	 00000004	 DWord
+  wAttributes  . . . . . . . . .	 00000008	 Word
+  srWindow . . . . . . . . . . .	 0000000A	 QWord
+  dwMaximumWindowSize  . . . . .	 00000012	 DWord
+COORD  . . . . . . . . . . . . .	 00000004
+  X  . . . . . . . . . . . . . .	 00000000	 Word
+  Y  . . . . . . . . . . . . . .	 00000002	 Word
+FILETIME . . . . . . . . . . . .	 00000008
+  loDateTime . . . . . . . . . .	 00000000	 DWord
+  hiDateTime . . . . . . . . . .	 00000004	 DWord
+FOCUS_EVENT_RECORD . . . . . . .	 00000004
+  bSetFocus  . . . . . . . . . .	 00000000	 DWord
+FPU_ENVIRON  . . . . . . . . . .	 0000001C
+  controlWord  . . . . . . . . .	 00000000	 Word
+  statusWord . . . . . . . . . .	 00000004	 Word
+  tagWord  . . . . . . . . . . .	 00000008	 Word
+  instrPointerOffset . . . . . .	 0000000C	 DWord
+  instrPointerSelector . . . . .	 00000010	 DWord
+  operandPointerOffset . . . . .	 00000014	 DWord
+  operandPointerSelector . . . .	 00000018	 Word
+INPUT_RECORD . . . . . . . . . .	 00000014
+  EventType  . . . . . . . . . .	 00000000	 Word
+  Event  . . . . . . . . . . . .	 00000004	 XmmWord
+  bKeyDown . . . . . . . . . . .	 00000000	 DWord
+  wRepeatCount . . . . . . . . .	 00000004	 Word
+  wVirtualKeyCode  . . . . . . .	 00000006	 Word
+  wVirtualScanCode . . . . . . .	 00000008	 Word
+  uChar  . . . . . . . . . . . .	 0000000A	 Word
+  UnicodeChar  . . . . . . . . .	 00000000	 Word
+  AsciiChar  . . . . . . . . . .	 00000000	 Byte
+  dwControlKeyState  . . . . . .	 0000000C	 DWord
+  dwMousePosition  . . . . . . .	 00000000	 DWord
+  dwButtonState  . . . . . . . .	 00000004	 DWord
+  dwMouseControlKeyState . . . .	 00000008	 DWord
+  dwEventFlags . . . . . . . . .	 0000000C	 DWord
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+  dwCommandId  . . . . . . . . .	 00000000	 DWord
+  bSetFocus  . . . . . . . . . .	 00000000	 DWord
+KEY_EVENT_RECORD . . . . . . . .	 00000010
+  bKeyDown . . . . . . . . . . .	 00000000	 DWord
+  wRepeatCount . . . . . . . . .	 00000004	 Word
+  wVirtualKeyCode  . . . . . . .	 00000006	 Word
+  wVirtualScanCode . . . . . . .	 00000008	 Word
+  uChar  . . . . . . . . . . . .	 0000000A	 Word
+  UnicodeChar  . . . . . . . . .	 00000000	 Word
+  AsciiChar  . . . . . . . . . .	 00000000	 Byte
+  dwControlKeyState  . . . . . .	 0000000C	 DWord
+MENU_EVENT_RECORD  . . . . . . .	 00000004
+  dwCommandId  . . . . . . . . .	 00000000	 DWord
+MOUSE_EVENT_RECORD . . . . . . .	 00000010
+  dwMousePosition  . . . . . . .	 00000000	 DWord
+  dwButtonState  . . . . . . . .	 00000004	 DWord
+  dwMouseControlKeyState . . . .	 00000008	 DWord
+  dwEventFlags . . . . . . . . .	 0000000C	 DWord
+SMALL_RECT . . . . . . . . . . .	 00000008
+  Left . . . . . . . . . . . . .	 00000000	 Word
+  Top  . . . . . . . . . . . . .	 00000002	 Word
+  Right  . . . . . . . . . . . .	 00000004	 Word
+  Bottom . . . . . . . . . . . .	 00000006	 Word
+SYSTEMTIME . . . . . . . . . . .	 00000010
+  wYear  . . . . . . . . . . . .	 00000000	 Word
+  wMonth . . . . . . . . . . . .	 00000002	 Word
+  wDayOfWeek . . . . . . . . . .	 00000004	 Word
+  wDay . . . . . . . . . . . . .	 00000006	 Word
+  wHour  . . . . . . . . . . . .	 00000008	 Word
+  wMinute  . . . . . . . . . . .	 0000000A	 Word
+  wSecond  . . . . . . . . . . .	 0000000C	 Word
+  wMilliseconds  . . . . . . . .	 0000000E	 Word
+WINDOW_BUFFER_SIZE_RECORD  . . .	 00000004
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 000002F7 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000006D Para	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+CloseFile  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+CloseHandle  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Clrscr . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+CreateFileA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+CreateOutputFile . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Crlf . . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Delay  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DumpMem  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DumpRegs . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FileTimeToDosDateTime  . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FileTimeToSystemTime . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FlushConsoleInputBuffer  . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FormatMessageA . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetCommandLineA  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetCommandTail . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleCP . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleCursorInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleMode . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleScreenBufferInfo . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetDateTime  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetFileTime  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetKeyState  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetLastError . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetLocalTime . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetMaxXY . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetMseconds  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetNumberOfConsoleInputEvents  .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetProcessHeap . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetStdHandle . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetSystemTime  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetTextColor . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetTickCount . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Gotoxy . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapAlloc  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapCreate . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapDestroy  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapFree . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapSize . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+IsDigit  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+LocalFree  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+MessageBoxA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+MsgBoxAsk  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+MsgBox . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+OpenInputFile  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ParseDecimal32 . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ParseInteger32 . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+PeekConsoleInputA  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Random32 . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+RandomRange  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Randomize  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadChar . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadConsoleA . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadConsoleInputA  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadDec  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadFile . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadFloat  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadFromFile . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadHex  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadInt  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadKeyFlush . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadKey  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadString . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleCursorInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleCursorPosition . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleMode . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleScreenBufferSize . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleTextAttribute  . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleTitleA . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleWindowInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetFilePointer . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetLocalTime . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetTextColor . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ShowFPUStack . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Sleep  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+StrLength  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_compare  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_copy . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_length . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_trim . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_ucase  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SystemTimeToFileTime . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WaitMsg  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteBinB  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteBin . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteChar  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteConsoleA  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteConsoleOutputAttribute  . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteConsoleOutputCharacterA . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteDec . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteFile  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteFloat . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteHexB  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteHex . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteInt . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteStackFrameName  . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000006D Public STDCALL
+  mainloop . . . . . . . . . . .	L Near	 00000005 _TEXT	
+  connectionloop . . . . . . . .	L Near	 00000023 _TEXT	
+  endmain  . . . . . . . . . . .	L Near	 00000066 _TEXT	
+printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000003h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+ALT_MASK . . . . . . . . . . . .	Number	 00000003h   
+ARCVB  . . . . . . . . . . . . .	Byte	 0000018B _DATA	
+ARCVE  . . . . . . . . . . . . .	Byte	 000001BB _DATA	
+AXMTB  . . . . . . . . . . . . .	Byte	 0000017F _DATA	
+AXMTE  . . . . . . . . . . . . .	Byte	 00000185 _DATA	
+BRCVA  . . . . . . . . . . . . .	Byte	 0000017F _DATA	
+BRCVC  . . . . . . . . . . . . .	Byte	 0000019D _DATA	
+BRCVF  . . . . . . . . . . . . .	Byte	 000001CD _DATA	
+BXMTA  . . . . . . . . . . . . .	Byte	 0000018B _DATA	
+BXMTC  . . . . . . . . . . . . .	Byte	 00000191 _DATA	
+BXMTF  . . . . . . . . . . . . .	Byte	 00000197 _DATA	
+CAPSLOCK_ON  . . . . . . . . . .	Number	 00000080h   
+CRCVB  . . . . . . . . . . . . .	Byte	 00000191 _DATA	
+CRCVD  . . . . . . . . . . . . .	Byte	 000001AF _DATA	
+CRCVE  . . . . . . . . . . . . .	Byte	 000001C1 _DATA	
+CREATE_ALWAYS  . . . . . . . . .	Number	 00000002h   
+CREATE_NEW . . . . . . . . . . .	Number	 00000001h   
+CTRL_MASK  . . . . . . . . . . .	Number	 0000000Ch   
+CXMTB  . . . . . . . . . . . . .	Byte	 0000019D _DATA	
+CXMTD  . . . . . . . . . . . . .	Byte	 000001A3 _DATA	
+CXMTE  . . . . . . . . . . . . .	Byte	 000001A9 _DATA	
+ConnectionPositionOffset . . . .	Number	 0000000Dh   
+ConnectionSize . . . . . . . . .	Number	 0000000Ch   
+Connection . . . . . . . . . . .	Number	 00000000h   
+CreateFile . . . . . . . . . . .	Text   	 CreateFileA
+DO_NOT_SHARE . . . . . . . . . .	Number	 00000000h   
+DRCVC  . . . . . . . . . . . . .	Byte	 000001A3 _DATA	
+DRCVF  . . . . . . . . . . . . .	Byte	 000001D9 _DATA	
+DXMTC  . . . . . . . . . . . . .	Byte	 000001AF _DATA	
+DXMTF  . . . . . . . . . . . . .	Byte	 000001B5 _DATA	
+Destination  . . . . . . . . . .	Number	 00000000h   
+ENABLE_ECHO_INPUT  . . . . . . .	Number	 00000004h   
+ENABLE_LINE_INPUT  . . . . . . .	Number	 00000002h   
+ENABLE_MOUSE_INPUT . . . . . . .	Number	 00000010h   
+ENABLE_PROCESSED_INPUT . . . . .	Number	 00000001h   
+ENABLE_PROCESSED_OUTPUT  . . . .	Number	 00000001h   
+ENABLE_WINDOW_INPUT  . . . . . .	Number	 00000008h   
+ENABLE_WRAP_AT_EOL_OUTPUT  . . .	Number	 00000002h   
+ENHANCED_KEY . . . . . . . . . .	Number	 00000100h   
+ERCVA  . . . . . . . . . . . . .	Byte	 00000185 _DATA	
+ERCVC  . . . . . . . . . . . . .	Byte	 000001A9 _DATA	
+ERCVF  . . . . . . . . . . . . .	Byte	 000001D3 _DATA	
+EXMTA  . . . . . . . . . . . . .	Byte	 000001BB _DATA	
+EXMTC  . . . . . . . . . . . . .	Byte	 000001C1 _DATA	
+EXMTF  . . . . . . . . . . . . .	Byte	 000001C7 _DATA	
+FALSE  . . . . . . . . . . . . .	Number	 00000000h   
+FILE_APPEND_DATA . . . . . . . .	Number	 00000004h   
+FILE_ATTRIBUTE_ARCHIVE . . . . .	Number	 00000020h   
+FILE_ATTRIBUTE_COMPRESSED  . . .	Number	 00000800h   
+FILE_ATTRIBUTE_DEVICE  . . . . .	Number	 00000040h   
+FILE_ATTRIBUTE_DIRECTORY . . . .	Number	 00000010h   
+FILE_ATTRIBUTE_ENCRYPTED . . . .	Number	 00004000h   
+FILE_ATTRIBUTE_HIDDEN  . . . . .	Number	 00000002h   
+FILE_ATTRIBUTE_NORMAL  . . . . .	Number	 00000080h   
+FILE_ATTRIBUTE_NOT_CONTENT_INDEXED .	Number	 00002000h   
+FILE_ATTRIBUTE_OFFLINE . . . . .	Number	 00001000h   
+FILE_ATTRIBUTE_READONLY  . . . .	Number	 00000001h   
+FILE_ATTRIBUTE_REPARSE_POINT . .	Number	 00000400h   
+FILE_ATTRIBUTE_SPARSE_FILE . . .	Number	 00000200h   
+FILE_ATTRIBUTE_SYSTEM  . . . . .	Number	 00000004h   
+FILE_ATTRIBUTE_TEMPORARY . . . .	Number	 00000100h   
+FILE_BEGIN . . . . . . . . . . .	Number	 00000000h   
+FILE_CURRENT . . . . . . . . . .	Number	 00000001h   
+FILE_DELETE_CHILD  . . . . . . .	Number	 00000040h   
+FILE_END . . . . . . . . . . . .	Number	 00000002h   
+FILE_READ_DATA . . . . . . . . .	Number	 00000001h   
+FILE_SHARE_DELETE  . . . . . . .	Number	 00000004h   
+FILE_SHARE_READ  . . . . . . . .	Number	 00000001h   
+FILE_SHARE_WRITE . . . . . . . .	Number	 00000002h   
+FILE_WRITE_DATA  . . . . . . . .	Number	 00000002h   
+FOCUS_EVENT  . . . . . . . . . .	Number	 00000010h   
+FORMAT_MESSAGE_ALLOCATE_BUFFER .	Number	 00000100h   
+FORMAT_MESSAGE_FROM_SYSTEM . . .	Number	 00001000h   
+FRCVB  . . . . . . . . . . . . .	Byte	 00000197 _DATA	
+FRCVD  . . . . . . . . . . . . .	Byte	 000001B5 _DATA	
+FRCVE  . . . . . . . . . . . . .	Byte	 000001C7 _DATA	
+FXMTB  . . . . . . . . . . . . .	Byte	 000001CD _DATA	
+FXMTD  . . . . . . . . . . . . .	Byte	 000001D9 _DATA	
+FXMTE  . . . . . . . . . . . . .	Byte	 000001D3 _DATA	
+FormatMessage  . . . . . . . . .	Text   	 FormatMessageA
+GENERIC_ALL  . . . . . . . . . .	Number	 10000000h   
+GENERIC_EXECUTE  . . . . . . . .	Number	 20000000h   
+GENERIC_READ . . . . . . . . . .	Number	 -80000000h   
+GENERIC_WRITE  . . . . . . . . .	Number	 40000000h   
+GetCommandLine . . . . . . . . .	Text   	 GetCommandLineA
+HANDLE . . . . . . . . . . . . .	Text   	 DWORD
+HEAP_GENERATE_EXCEPTIONS . . . .	Number	 00000004h   
+HEAP_GROWABLE  . . . . . . . . .	Number	 00000002h   
+HEAP_NO_SERIALIZE  . . . . . . .	Number	 00000001h   
+HEAP_REALLOC_IN_PLACE_ONLY . . .	Number	 00000010h   
+HEAP_ZERO_MEMORY . . . . . . . .	Number	 00000008h   
+IDABORT  . . . . . . . . . . . .	Number	 00000003h   
+IDCANCEL . . . . . . . . . . . .	Number	 00000002h   
+IDCLOSE  . . . . . . . . . . . .	Number	 00000008h   
+IDCONTINUE . . . . . . . . . . .	Number	 0000000Bh   
+IDHELP . . . . . . . . . . . . .	Number	 00000009h   
+IDIGNORE . . . . . . . . . . . .	Number	 00000005h   
+IDNO . . . . . . . . . . . . . .	Number	 00000007h   
+IDOK . . . . . . . . . . . . . .	Number	 00000001h   
+IDRETRY  . . . . . . . . . . . .	Number	 00000004h   
+IDTIMEOUT  . . . . . . . . . . .	Number	 00007D00h   
+IDTRYAGAIN . . . . . . . . . . .	Number	 0000000Ah   
+IDYES  . . . . . . . . . . . . .	Number	 00000006h   
+INVALID_HANDLE_VALUE . . . . . .	Number	 -00000001h   
+KBDOWN_FLAG  . . . . . . . . . .	Number	 00000001h   
+KEY_EVENT  . . . . . . . . . . .	Number	 00000001h   
+KEY_MASKS  . . . . . . . . . . .	Number	 0000001Fh   
+LEFT_ALT_PRESSED . . . . . . . .	Number	 00000002h   
+LEFT_CTRL_PRESSED  . . . . . . .	Number	 00000008h   
+MB_ABORTRETRYIGNORE  . . . . . .	Number	 00000002h   
+MB_APPLMODAL . . . . . . . . . .	Number	 00000000h   
+MB_CANCELTRYCONTINUE . . . . . .	Number	 00000006h   
+MB_DEFBUTTON1  . . . . . . . . .	Number	 00000000h   
+MB_DEFBUTTON2  . . . . . . . . .	Number	 00000100h   
+MB_DEFBUTTON3  . . . . . . . . .	Number	 00000200h   
+MB_DEFBUTTON4  . . . . . . . . .	Number	 00000300h   
+MB_HELP  . . . . . . . . . . . .	Number	 00004000h   
+MB_ICONASTERISK  . . . . . . . .	Number	 00000040h   
+MB_ICONERROR . . . . . . . . . .	Number	 00000010h   
+MB_ICONEXCLAMATION . . . . . . .	Number	 00000030h   
+MB_ICONHAND  . . . . . . . . . .	Number	 00000010h   
+MB_ICONINFORMATION . . . . . . .	Number	 00000040h   
+MB_ICONQUESTION  . . . . . . . .	Number	 00000020h   
+MB_ICONSTOP  . . . . . . . . . .	Number	 00000010h   
+MB_ICONWARNING . . . . . . . . .	Number	 00000030h   
+MB_OKCANCEL  . . . . . . . . . .	Number	 00000001h   
+MB_OK  . . . . . . . . . . . . .	Number	 00000000h   
+MB_RETRYCANCEL . . . . . . . . .	Number	 00000005h   
+MB_SYSTEMMODAL . . . . . . . . .	Number	 00001000h   
+MB_TASKMODAL . . . . . . . . . .	Number	 00002000h   
+MB_USERICON  . . . . . . . . . .	Number	 00000080h   
+MB_YESNOCANCEL . . . . . . . . .	Number	 00000003h   
+MB_YESNO . . . . . . . . . . . .	Number	 00000004h   
+MENU_EVENT . . . . . . . . . . .	Number	 00000008h   
+MOUSE_EVENT  . . . . . . . . . .	Number	 00000002h   
+MessageBox . . . . . . . . . . .	Text   	 MessageBoxA
+NULL . . . . . . . . . . . . . .	Number	 00000000h   
+NUMLOCK_ON . . . . . . . . . . .	Number	 00000020h   
+NameOffset . . . . . . . . . . .	Number	 00000000h   
+Network  . . . . . . . . . . . .	Byte	 000001DF _DATA	
+NodeA  . . . . . . . . . . . . .	Byte	 000001DF _DATA	
+NodeB  . . . . . . . . . . . . .	Byte	 00000205 _DATA	
+NodeC  . . . . . . . . . . . . .	Byte	 00000237 _DATA	
+NodeD  . . . . . . . . . . . . .	Byte	 00000269 _DATA	
+NodeE  . . . . . . . . . . . . .	Byte	 0000028F _DATA	
+NodeF  . . . . . . . . . . . . .	Byte	 000002C1 _DATA	
+NodeMinimunSize  . . . . . . . .	Number	 0000000Eh   
+NodePositionOffset . . . . . . .	Number	 00000006h   
+NumConnectionsOffset . . . . . .	Number	 00000001h   
+OPEN_ALWAYS  . . . . . . . . . .	Number	 00000004h   
+OPEN_EXISTING  . . . . . . . . .	Number	 00000003h   
+Origin . . . . . . . . . . . . .	Number	 00000002h   
+PacketSize . . . . . . . . . . .	Number	 00000006h   
+PeekConsoleInput . . . . . . . .	Text   	 PeekConsoleInputA
+QueueA . . . . . . . . . . . . .	Byte	 00000017 _DATA	
+QueueB . . . . . . . . . . . . .	Byte	 00000053 _DATA	
+QueueC . . . . . . . . . . . . .	Byte	 0000008F _DATA	
+QueueD . . . . . . . . . . . . .	Byte	 000000CB _DATA	
+QueueE . . . . . . . . . . . . .	Byte	 00000107 _DATA	
+QueueF . . . . . . . . . . . . .	Byte	 00000143 _DATA	
+QueueSize  . . . . . . . . . . .	Number	 0000000Ah   
+RCV  . . . . . . . . . . . . . .	Number	 00000008h   
+RIGHT_ALT_PRESSED  . . . . . . .	Number	 00000001h   
+RIGHT_CTRL_PRESSED . . . . . . .	Number	 00000004h   
+ReadConsoleInput . . . . . . . .	Text   	 ReadConsoleInputA
+ReadConsole  . . . . . . . . . .	Text   	 ReadConsoleA
+Received . . . . . . . . . . . .	Number	 00000004h   
+SCROLLLOCK_ON  . . . . . . . . .	Number	 00000040h   
+SHIFT_MASK . . . . . . . . . . .	Number	 00000010h   
+SHIFT_PRESSED  . . . . . . . . .	Number	 00000010h   
+STD_ERROR_HANDLE . . . . . . . .	Number	 -0000000Ch   
+STD_INPUT_HANDLE . . . . . . . .	Number	 -0000000Ah   
+STD_OUTPUT_HANDLE  . . . . . . .	Number	 -0000000Bh   
+Sender . . . . . . . . . . . . .	Number	 00000001h   
+SetConsoleTitle  . . . . . . . .	Text   	 SetConsoleTitleA
+TAB  . . . . . . . . . . . . . .	Number	 00000009h   
+TRUE . . . . . . . . . . . . . .	Number	 00000001h   
+TRUNCATE_EXISTING  . . . . . . .	Number	 00000005h   
+TTL  . . . . . . . . . . . . . .	Number	 00000003h   
+VK_11  . . . . . . . . . . . . .	Number	 000000BDh   
+VK_12  . . . . . . . . . . . . .	Number	 000000BBh   
+VK_ADD . . . . . . . . . . . . .	Number	 0000006Bh   
+VK_BACK  . . . . . . . . . . . .	Number	 00000008h   
+VK_CANCEL  . . . . . . . . . . .	Number	 00000003h   
+VK_CAPITAL . . . . . . . . . . .	Number	 00000014h   
+VK_CLEAR . . . . . . . . . . . .	Number	 0000000Ch   
+VK_CONTROL . . . . . . . . . . .	Number	 00000011h   
+VK_DECIMAL . . . . . . . . . . .	Number	 0000006Eh   
+VK_DELETE  . . . . . . . . . . .	Number	 0000002Eh   
+VK_DIVIDE  . . . . . . . . . . .	Number	 0000006Fh   
+VK_DOWN  . . . . . . . . . . . .	Number	 00000028h   
+VK_END . . . . . . . . . . . . .	Number	 00000023h   
+VK_ESCAPE  . . . . . . . . . . .	Number	 0000001Bh   
+VK_EXECUTE . . . . . . . . . . .	Number	 0000002Bh   
+VK_F10 . . . . . . . . . . . . .	Number	 00000079h   
+VK_F11 . . . . . . . . . . . . .	Number	 0000007Ah   
+VK_F12 . . . . . . . . . . . . .	Number	 0000007Bh   
+VK_F13 . . . . . . . . . . . . .	Number	 0000007Ch   
+VK_F14 . . . . . . . . . . . . .	Number	 0000007Dh   
+VK_F15 . . . . . . . . . . . . .	Number	 0000007Eh   
+VK_F16 . . . . . . . . . . . . .	Number	 0000007Fh   
+VK_F17 . . . . . . . . . . . . .	Number	 00000080h   
+VK_F18 . . . . . . . . . . . . .	Number	 00000081h   
+VK_F19 . . . . . . . . . . . . .	Number	 00000082h   
+VK_F1  . . . . . . . . . . . . .	Number	 00000070h   
+VK_F20 . . . . . . . . . . . . .	Number	 00000083h   
+VK_F21 . . . . . . . . . . . . .	Number	 00000084h   
+VK_F22 . . . . . . . . . . . . .	Number	 00000085h   
+VK_F23 . . . . . . . . . . . . .	Number	 00000086h   
+VK_F24 . . . . . . . . . . . . .	Number	 00000087h   
+VK_F2  . . . . . . . . . . . . .	Number	 00000071h   
+VK_F3  . . . . . . . . . . . . .	Number	 00000072h   
+VK_F4  . . . . . . . . . . . . .	Number	 00000073h   
+VK_F5  . . . . . . . . . . . . .	Number	 00000074h   
+VK_F6  . . . . . . . . . . . . .	Number	 00000075h   
+VK_F7  . . . . . . . . . . . . .	Number	 00000076h   
+VK_F8  . . . . . . . . . . . . .	Number	 00000077h   
+VK_F9  . . . . . . . . . . . . .	Number	 00000078h   
+VK_HELP  . . . . . . . . . . . .	Number	 0000002Fh   
+VK_HOME  . . . . . . . . . . . .	Number	 00000024h   
+VK_INSERT  . . . . . . . . . . .	Number	 0000002Dh   
+VK_LBUTTON . . . . . . . . . . .	Number	 00000001h   
+VK_LCONTROL  . . . . . . . . . .	Number	 000000A2h   
+VK_LEFT  . . . . . . . . . . . .	Number	 00000025h   
+VK_LMENU . . . . . . . . . . . .	Number	 000000A4h   
+VK_LSHIFT  . . . . . . . . . . .	Number	 000000A0h   
+VK_MENU  . . . . . . . . . . . .	Number	 00000012h   
+VK_MULTIPLY  . . . . . . . . . .	Number	 0000006Ah   
+VK_NEXT  . . . . . . . . . . . .	Number	 00000022h   
+VK_NUMLOCK . . . . . . . . . . .	Number	 00000090h   
+VK_NUMPAD0 . . . . . . . . . . .	Number	 00000060h   
+VK_NUMPAD1 . . . . . . . . . . .	Number	 00000061h   
+VK_NUMPAD2 . . . . . . . . . . .	Number	 00000062h   
+VK_NUMPAD3 . . . . . . . . . . .	Number	 00000063h   
+VK_NUMPAD4 . . . . . . . . . . .	Number	 00000064h   
+VK_NUMPAD5 . . . . . . . . . . .	Number	 00000065h   
+VK_NUMPAD6 . . . . . . . . . . .	Number	 00000066h   
+VK_NUMPAD7 . . . . . . . . . . .	Number	 00000067h   
+VK_NUMPAD8 . . . . . . . . . . .	Number	 00000068h   
+VK_NUMPAD9 . . . . . . . . . . .	Number	 00000069h   
+VK_PAUSE . . . . . . . . . . . .	Number	 00000013h   
+VK_PRINT . . . . . . . . . . . .	Number	 0000002Ah   
+VK_PRIOR . . . . . . . . . . . .	Number	 00000021h   
+VK_RBUTTON . . . . . . . . . . .	Number	 00000002h   
+VK_RCONTROL  . . . . . . . . . .	Number	 000000A3h   
+VK_RETURN  . . . . . . . . . . .	Number	 0000000Dh   
+VK_RIGHT . . . . . . . . . . . .	Number	 00000027h   
+VK_RMENU . . . . . . . . . . . .	Number	 000000A5h   
+VK_RSHIFT  . . . . . . . . . . .	Number	 000000A1h   
+VK_SCROLL  . . . . . . . . . . .	Number	 00000091h   
+VK_SEPARATER . . . . . . . . . .	Number	 0000006Ch   
+VK_SHIFT . . . . . . . . . . . .	Number	 00000010h   
+VK_SNAPSHOT  . . . . . . . . . .	Number	 0000002Ch   
+VK_SPACE . . . . . . . . . . . .	Number	 00000020h   
+VK_SUBTRACT  . . . . . . . . . .	Number	 0000006Dh   
+VK_TAB . . . . . . . . . . . . .	Number	 00000009h   
+VK_UP  . . . . . . . . . . . . .	Number	 00000026h   
+WINDOW_BUFFER_SIZE_EVENT . . . .	Number	 00000004h   
+WriteConsoleOutputCharacter  . .	Text   	 WriteConsoleOutputCharacterA
+WriteConsole . . . . . . . . . .	Text   	 WriteConsoleA
+XMT  . . . . . . . . . . . . . .	Number	 00000004h   
+black  . . . . . . . . . . . . .	Number	 00000000h   
+blue . . . . . . . . . . . . . .	Number	 00000001h   
+brown  . . . . . . . . . . . . .	Number	 00000006h   
+current_node . . . . . . . . . .	Byte	 00000000 _DATA	
+cyan . . . . . . . . . . . . . .	Number	 00000003h   
+endofnodes . . . . . . . . . . .	DWord	 000002F3 _DATA	
+exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
+gray . . . . . . . . . . . . . .	Number	 00000008h   
+green  . . . . . . . . . . . . .	Number	 00000002h   
+is_connected_to  . . . . . . . .	Byte	 00000008 _DATA	
+lightBlue  . . . . . . . . . . .	Number	 00000009h   
+lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
+lightGray  . . . . . . . . . . .	Number	 00000007h   
+lightGreen . . . . . . . . . . .	Number	 0000000Ah   
+lightMagenta . . . . . . . . . .	Number	 0000000Dh   
+lightRed . . . . . . . . . . . .	Number	 0000000Ch   
+magenta  . . . . . . . . . . . .	Number	 00000005h   
+red  . . . . . . . . . . . . . .	Number	 00000004h   
+white  . . . . . . . . . . . . .	Number	 0000000Fh   
+wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
+yellow . . . . . . . . . . . . .	Number	 0000000Eh   
+
+	   0 Warnings
+	   0 Errors

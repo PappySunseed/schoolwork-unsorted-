@@ -1,0 +1,19 @@
+1.  BEGIN
+2.  READ(A,BB);
+4.  X:=A+BB;
+6.  
+7.  
+8.  
+9.  WRITE(X,BB);
+10.  
+11.  
+12.  
+13.  END
+14.  
+15.  
+16.  
+17.  
+
+Lexical errors: 0
+Syntactic errors: 0
+Total errors: 0

@@ -1,0 +1,11 @@
+FirstName LastName       GrossPay
+John      Smith           787.97
+Alice     Johnson        1027.44
+Robert    Brown           755.08
+Mary      Davis           811.10
+Michael   Miller         1456.31
+Linda     Wilson          627.36
+William   Moore           431.43
+Elizabeth Taylor         1093.04
+David     Anderson        878.88
+Susan     Thomas         1800.00

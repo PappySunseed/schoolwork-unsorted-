@@ -1,0 +1,5 @@
+1.  BEGIN
+2.  READ(A,BB);
+4.  X:=A+BB;
+Syntactic error in line 4: 'BB'. Expcted 'PLUSOP'	
+5.  Y:=

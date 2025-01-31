@@ -1,0 +1,8 @@
+﻿  main.c
+C:\Users\958\Desktop\langTranslation\Prog 2 scanner\ConsoleApplication1\main.c(31,22): warning C4013: 'init' undefined; assuming extern returning int
+C:\Users\958\Desktop\langTranslation\Prog 2 scanner\ConsoleApplication1\main.c(35,15): warning C4013: 'wrapup' undefined; assuming extern returning int
+C:\Users\958\Desktop\langTranslation\Prog 2 scanner\ConsoleApplication1\main.c(25,7): warning C4101: 'c': unreferenced local variable
+C:\Users\958\Desktop\langTranslation\Prog 2 scanner\ConsoleApplication1\main.c(48,26): warning C4013: 'FileOpen' undefined; assuming extern returning int
+C:\Users\958\Desktop\langTranslation\Prog 2 scanner\ConsoleApplication1\main.c(46,2): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\958\Desktop\langTranslation\Prog 2 scanner\ConsoleApplication1\main.c(58,13): warning C4013: 'closeFiles' undefined; assuming extern returning int
+  ConsoleApplication1.vcxproj -> C:\Users\958\Desktop\langTranslation\Prog 2 scanner\x64\Debug\Prog2-Scanner.exe

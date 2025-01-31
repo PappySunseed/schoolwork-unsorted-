@@ -1,0 +1,23 @@
+John      Smith          44571575
+Alice     Johnson        45122050
+Robert    Brown          50201275
+Mary      Davis          40181890
+Michael   Miller         55472225
+Linda     Wilson         40251430
+William   Moore          40100950
+Elizabeth Taylor         42552380
+David     Anderson       45001745
+Susan     Thomas         60002500
+James     Jackson        48301120
+Patricia  White          45451990
+Richard   Harris         53121360
+Barbara   Martin         48501075
+Charles   Thompson       42220855
+Jessica   Garcia         49302415
+ChristopherMartinez      41182135
+Sarah     Robinson       47451680
+Daniel    Clark          56502090
+Karen     Rodriguez      43750985
+Matthew   Lewis          49301475
+Nancy     Lee            47551280
+Joshua    Walker         48901865

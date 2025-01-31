@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.34407.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Celsius to Fahrenheit converter", "Celsius to Fahrenheit converter.pyproj", "{5C63DE3D-57E3-4D81-90B4-D299E2FF4FC8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C63DE3D-57E3-4D81-90B4-D299E2FF4FC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C63DE3D-57E3-4D81-90B4-D299E2FF4FC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9B362635-2D84-451B-88E7-DB23A10FA568}
+	EndGlobalSection
+EndGlobal

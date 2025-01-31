@@ -1,0 +1,27 @@
+/*
+File Path: C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\
+Last modification date: Wed Apr 17 14:58:07 2024
+ */
+#include<stdio.h>
+main()
+{
+
+int A;
+
+int BB;
+
+int X;
+
+int temp0;
+
+int temp1;
+scanf("%d%d", A,BB);
+temp0 = A+ABB;
+X = temp0;
+X = temp0;
+temp0 = temp0ABBX;
+temp1 = temp0ABBXBB;
+printf("%d%d", X,BB);
+
+return 0;
+}

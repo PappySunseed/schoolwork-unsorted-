@@ -1,0 +1,37 @@
+    BEGIN
+    READ(A,BB);
+    X:=A+ BB;
+    Y:=A-BB;
+    WRITE(A,BB,X,Y);
+    X:=A - 5;
+    WRITE(A,5,X);
+    X:=BB* -5;
+    WRITE(BB,5,X);
+    InF(!(A/2>7))THEN
+    WRITE(A);
+    ELSE
+    A:=7;
+    ENDIF
+    WHILE(FRED>4)
+    IF(T>=TRUE)THEN
+    WRITE(G);
+    ENDIF
+    ENDWHILE
+    IF(6<O)THEN
+    WRITE(O)
+    IF(A<=FALSE)
+then
+    WRITE(X);
+endif
+    IF(X=NULL)
+then
+    WRITE(X);
+else
+    IF(A<>FALSE)
+then
+    WRITE(A);
+    ENDIF
+    END
+    EOF
+
+

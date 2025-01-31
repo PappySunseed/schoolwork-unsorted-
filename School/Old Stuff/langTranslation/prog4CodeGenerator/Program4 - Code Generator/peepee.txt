@@ -1,0 +1,10 @@
+    BEGIN
+    READ(A,BB);
+    X:=A+ BB;
+	
+    WRITE(X,BB);
+
+    END
+    
+
+

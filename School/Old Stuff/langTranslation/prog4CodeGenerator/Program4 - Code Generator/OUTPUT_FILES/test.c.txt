@@ -1,0 +1,17 @@
+/*
+File Path: C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\
+Last modification date: Wed Apr 17 13:11:04 2024
+ */
+#include<stdio.h>
+main()
+{
+
+int A;
+
+int BB;
+
+int temp0;
+temp0 = BB;
+
+return 0;
+}

@@ -1,0 +1,173 @@
+--------------------
+-- DATA STRUTURES --
+--------------------
+
+Exam Topics;
+> Stacks
+> Queues
+> As much Searching/Hashing is in the following notes
+> Linked Lists are implied to be on the exam due to stacks and queues
+
+> After the exam, read sorting in the book
+
+QUEUES;
+> First in, first out data structure.
+> Best described as a line... first come, first serve.
+> Compared to stack, we had push, pop, and stack_top as the basics
+> With queues, we have enqueue and dequeue, which are insert and remove respectively
+	> We will also have queueFront and queueBack
+	> Best done with a Linked List. Arrays suck.
+	
+	insert head is O(1)
+	remove head is O(1)
+	insert tail is O(1)
+	delete tail is O(n)
+	
+> With queues we will...
+	> Return a value with dequeue
+	> Insert a value to the end of the queue with enqueue
+	
+QUEUING THEORY;
+> Suppose you open a new store of some type... walmart, giant eagle, etc.
+> How do you know how many cashiers you're going to need?
+> You'll want to make an estimate via other stores and how much business they get...
+> Between x time and y time, how much business do we get? How long will it take to ring up a customer? Estimate. TLDR; Make an educated estimate.
+	
+	//The way he phrased it, the following may be on the exam.
+	> SOME TERMS FOR QUEUING THEORY;
+		> Arrival Rate - Average rate at which jobs/tasks enter the queue. (I.E. 6 people per minute are getting in a line.)
+		> Service Time - Average time to process a job/task in the queue. (I.E. How long it take to check a person in line out.)
+	*** > Queue Time - Average time a job/task waits to begin being processed. (I.E. How long a person is waiting in line to get checked out.) (This is the one people care about the most)
+		> Response Time - Queue Time + Service Time... But it's also an average of when a job entered the queue, to the time it was fully thrown out of the queue. We get this through the previous equation.
+		
+	> Referring to the store example, the arrival rate is what determines how many checkout lines we'd need. 
+	> However, we have most control over how many processes can be done in a single time, or how many employees we'd need on the registers.
+	
+	>> To simulate what's going on...
+	> Lets assume each loop of the while loop takes 1 minute.
+	> If the average amount of customers is supposed to be 3, set up a random number for adding customers since it's just an estimated average.
+	> When a new customer enters, they pick the shortest line. We do the same for code.
+	> Random numbers are a good tool for this example since each customer is, again, based on an estimated average. Not every customer is checked out in 2 minutes
+	
+	while(true) {
+		add new customers (0 - 6) - These guys are added to the shortest line; But how many lines are there? We determine that. 
+		finish a customer? - Calculate service time
+		start new customer? - If anyone finished, start someone new; Calc the queue time, start the service time.
+	}
+	
+// The following may end up on the exam. "Circular Queues" 100% are.
+ARRAY QUEUES;
+> We're less likely to use these since you're stuck with a certain size... not the worst, just less practical most of the time
+
+	queueFront = -1;
+	queueBack = -1;
+	
+	> With the first enqueue, we do not leave the front of the list at -1. Both the front and the back will point at the first entry.
+	> Everytime we do an insert on the queue, it's on the back. Therefore, back will move over as we're inserting.
+		> This causes front to move over, since the first entry of the queue is now "popped" from the queue.
+		
+	> Eventually, after enough of using the queue, the start of the array is empty, and the queueBack and queueFront are at the end of the array.
+		> There are multiple ways to handle this; We could move the entire array over for every dequeue, however this causes O(n).
+		> The other option is that when we hit the end of the queue, we can move everything over at that point. Still a bad solution.
+		> The third approach and preferred method is called implementing a "circular queue"
+****		> MEMORIZE THIS FOR THE EXAM; If he uses a circular queue on the exam, he implies using an array. DO NOT MAKE A CIRCULAR LINKED LIST.
+			> All a circular array does is simple; If queueBack hits the back, set it back to 0 in the array. If queueFront hits the back, set it back to 0 in the array.
+				> This means we never have to shift, we always have O(1), but the only issue if that the array could become full.
+				> "It's like 6 or 7 lines for each enqueue and dequeue... Try it yourself"
+	
+- He stopped talking about queues at this point; If this doesn't make sense, ask or read the book. Same chapter as stacks.	
+------------------------------------------------------------------------------------------------------------------------------
+SEARCHING;
+> Big topic, not covering everything tonight
+> Finding the location of a value in a list;
+	> For no extra work, we can also say where we found it. We find it, then return where we found it.
+	
+> Usually means finding the first occurance of something; Search ALL is for finding every occurance of something.
+	> For now, he's discussing the former.
+	
+> There are 3 ways to do this; We've done 2 of them before.
+
+	> Linear Search
+		> Quick and dirty for loop that searches until it's found, unless it hits the end of the list.
+		> O(n)
+		> Not very efficient. For some, it's great. In others, it's not.
+		> May get used for small data amounts, but don't expect to use it if you're working for Microsoft.
+		> Sub-Categories of Linear Search
+			> Sentinel Search - Make an extra array slot; 0 - SIZE-1 is where the data is, and the extra slot is a guaranteed hit. Makes it a much more simple statement.
+				if(value found) {
+				
+				}
+				else {
+				
+				}
+			
+			> Probability Search - Everytime you do a search and you do find it, swap it with the item in front of it. 
+				> If you look for something more frequently, it moves that item to the closer to the front
+				> Things you search for less often end up towards the back
+
+			> Ordered List Search - Assuming you're allowed to change the items in the list, arrange them in smallest to largest. 
+				> That way when you get to an item too big, you can stop immediately.
+
+
+	> Binary Search
+		> Orders the list from smallest to largest.
+		> O(log base2 N)
+		> Cuts the list in half every time it's looped. When you cut data in half, it gets small fast.
+		> Generally a great method, unless you cannot put items in order.
+
+
+	> Hashing (NEW METHOD)
+		> Technically, it's O(n) due to stuff that will never happen in real-life
+		> Data is stored in an array and does not have to be sorted.
+		> Suppose you have 100 pieces of data to store;
+			> If it was possible to give those each an individual ID number, you'd pick 0 - 99. For example, our Student ID #'s
+			> If you're looking for a specific student with an ID of 37, you'd say array[37]. It's O(1). (This is the most ideal form, and generally unrealistic)
+			
+		> A realistic example, you could have something like an SSN... The SSN would be SSN%100 and give us a remainder between 0 and 99.
+			> You'll eventually get a collision (Two individual instances of the same slot).
+			
+			SSN % 100 = ?
+			> The SSN % 100 is going to a Hash Function, which means your number will be processed, and odds are you'll be sent to the right array slot. If it's not, move over one until you find it.
+			
+	> TERMS FOR HASHING;
+		> Hash Search (or Hashing) - Search in which we take a key value, run it through an algorithmic function, get an answer, and that tells use what array slot to utilize/view.
+		> Hash Function - Function we use to do the previous
+		> Synonyms - Different Key Values that has to the same location; These are the cause of collision
+		> Collision - Event that occurs when something hashes to a location, but the location is already full.
+		> Probe - One instance of hashing a key value, getting an answer, and testing for success
+		
+		The following are Hashing Methods as well as Terms
+ 		> MODULO DIVISION - If your array size is a prime number, you're proven to get less collisions. Look for the next biggest prime number closest to your desired array size.
+		> DIRECT HASHING - Nothing is done to the key, it is the array slot number. Never used.
+		
+		The following methods end up followed by MOD division
+		> DIGIT EXTRACTION - The ID number is probably big, so we extract certain digits from it. EX; 1621789512894... We could take digits 1 2 7 and 12. We now have 12712. The we use MOD on it.
+		> MID SQUARE - The square of a key, then do digit extraction, then use MOD division.
+		> MULTIPLICATIVE - We take the key value, take a number 0 < n < 1, multiply the key by n, and end up with a float answer. The first few digits after the decimal are taken, and then we use MOD on them.
+		
+		>> We can straight up make our own versions of getting an array slot. The previous are just proven to function well.
+		
+		> LOAD FACTOR - Number of items we have stored in the array divided by the array size... What % full an array is.
+			> Proven that an LF <= 75% full reduces collisions.
+			> Make it a prime number too
+			
+		> COLLISION RESOLUTION - Other things we can try for collision errors;
+			> Linear Probing - Try the next array slot if something is already there, assuming you're trying to insert something.
+				> If you're searching, continually try the next slot... however, be sure to include a status flag for each array slot. 
+				> (1 - DataStored, 2 - NeverUsed, 3 - RemovedData) Don't stop until you hit a status of 2.
+				
+			> Open Address Hashing w/ Linear Probing - Means we are hashing with an array. Period.
+			
+			> Double Hashing w/ Key Offset - If Open Address Hashing, these will be your 
+				> If we hash to an open array slot and it isn't what we're looking for, another thing to do is double hashing; Have a second hash function.
+				> This second hash will have better results with 2 parameters rather than 1. Give it the original key AND where you collided at... Picks up where the last left off.
+				
+			> Chain Hashing - Does not have a separate collision resoltuion method; Implies how we hash and resolve collisions.
+				> AKA Chaining, or Chained Hashing
+				> We make an array of Linked Lists, which adds almost nothing to complexity.
+				> We take a key value, use MOD division, and that picks an array slot to put the data in...
+				> You'll eventually get a collision, but because they're linked lists, you can add as much as you want within that array slot.
+				> So 2 key values can result in a collision, but be stored in the same array slot. We would simply have to traverse the linked list to find the correct value.
+				> Things to consider;
+					> Don't make an array too small. This can make a linked list search O(n).
+					> Making one too big is a waste of space.

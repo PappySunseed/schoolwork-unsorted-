@@ -1,0 +1,53 @@
+/*
+File Path: C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\
+Last modification date: Wed Apr 17 12:59:17 2024
+ */
+#include<stdio.h>
+main()
+{
+
+int A;
+
+int BB;
+
+int X;
+
+int temp0;
+
+int Y;
+
+int temp1;
+
+int temp2;
+
+int temp3;
+
+int INF;
+scanf("%d%d", A,BB);
+temp0 = A+ABB;
+X = ;;
+temp0 = ABBA-ABBABB;
+Y = ;;
+temp0 = ABBABBA-ABBABB;
+temp1 = ABBABBABB-ABBABB;
+temp2 = ABBABBABBX-ABBABB;
+temp3 = ABBABBABBXY-ABBABB;
+printf("%d%d%d%d", A,BB,X,Y);
+temp0 = ABBABBABBXYA-ABBABBABBXYA5;
+X = ;;
+temp0 = ABBABBABBXYA5A-ABBABBABBXYA5;
+temp1 = ABBABBABBXYA5A5-ABBABBABBXYA5;
+temp2 = ABBABBABBXYA5A5X-ABBABBABBXYA5;
+printf("%d%d%d", A,5,X);
+temp0 = temp2-ABBABBABBXYA5;
+temp1 = ABBABBABBXYA5A5XBB*-5-ABBABBABBXYA5;
+X = ;;
+temp0 = ABBABBABBXYA5A5XBB*-5BB-ABBABBABBXYA5;
+temp1 = ABBABBABBXYA5A5XBB*-5BB5-ABBABBABBXYA5;
+temp2 = ABBABBABBXYA5A5XBB*-5BB5X-ABBABBABBXYA5;
+printf("%d%d%d", BB,5,X);
+temp0 = ABBABBABBXYA5A5XBB*-5BB5X-ABBABBABBXYA5;
+
+return 0;
+}
+/*PROGRAM DID/DIDN'T COMPILE WITH A CERTAIN NUMBER OF ERRORS*/

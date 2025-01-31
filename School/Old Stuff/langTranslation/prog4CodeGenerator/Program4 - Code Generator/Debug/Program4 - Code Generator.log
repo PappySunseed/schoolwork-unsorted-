@@ -1,0 +1,20 @@
+﻿  CodeGenerator.c
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(85): warning C4716: 'program': must return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(166): warning C4715: 'statement_list': not all control paths return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(326): warning C4715: 'IFTail': not all control paths return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(370): warning C4716: 'expr_list': must return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(447): warning C4715: 'term': not all control paths return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(467): warning C4715: 'multOP': not all control paths return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(581): warning C4716: 'condition': must return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(597): warning C4715: 'logOp': not all control paths return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(678): warning C4716: 'c_term': must return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(693): warning C4716: 'c_factor': must return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(799): warning C4716: 'assign': must return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(803): warning C4716: 'openTemp': must return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(808): warning C4716: 'writeTemp': must return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(821): warning C4716: 'readID': must return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(871): warning C4716: 'processLiteral': must return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(878): warning C4716: 'genCondition': must return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(927): warning C4716: 'finish': must return a value
+C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\CodeGenerator.c(983): warning C4716: 'generate': must return a value
+  Program4 - Code Generator.vcxproj -> C:\Users\958\Desktop\langTranslation\prog4CodeGenerator\Program4 - Code Generator\Debug\Program4 - Code Generator.exe

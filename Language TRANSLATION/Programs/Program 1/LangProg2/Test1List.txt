@@ -1,0 +1,7 @@
+begin--a program1.  
+Errors(s) found:  Š² unrecognized.
+
+a=BB&A1.  
+Errors(s) found: & unrecognized.
+
+end

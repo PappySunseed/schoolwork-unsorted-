@@ -1,0 +1,16 @@
+
+//--------- pickNode fuction----------//
+/* called when a node is "picked" as a dominating node. Requires the input of the "picked" node, the single dimension array keeping track of undominated nodes (0), dominated nodes (1), and dominating nodes (2) as well as the bool 2 dimensional adjacency matrix. the function iterates through all the edges connected to *node* and marks them as dominated (1). it then marks the array spot *node* as dominating (2) */
+
+void pickNode(int node, int dominated[], vector<vector<bool> > adjMatrix)	
+{
+	for(int i; i++; i < SIZE)
+	{
+		if (adjMatrix[node][i] == true)
+			dominated[i] = 1;
+	}
+	
+	dominated[node] = 2;
+	
+	return;
+}

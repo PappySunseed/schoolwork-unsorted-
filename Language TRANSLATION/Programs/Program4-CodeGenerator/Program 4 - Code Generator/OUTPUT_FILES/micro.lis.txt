@@ -1,0 +1,39 @@
+1.  BEGIN
+2.  READ(A,BB);
+4.  X:=A+BB;
+6.  Y:=A-BB;--WRITE(A,BB,X,Y);
+8.  X:=A-5;
+10.  WRITE(A,5,X);
+12.  X:=BB*---5;
+14.  WRITE(BB,5,X);
+16.  IF(!(A/2>7))THEN
+18.  WRITE(A);
+23.  ELSE
+28.  A:=7;
+30.  ENDIF
+35.  WHILE(FRED>4)
+40.  IF(T>=TRUE)THEN
+45.  WRITE(G);
+50.  ENDIF
+55.  ENDWHILE
+60.  IF(6<O)THEN
+65.  WRITE(O);
+70.  IF(A<=FALSE)
+75.  THEN
+80.  IF(X=NULL)
+85.  THEN
+90.  WRITE(X);
+95.  ENDIF
+100.  ELSE
+105.  IF(A<>FALSE)
+110.  THEN
+115.  WRITE(A);
+120.  ENDIF
+125.  ENDIF
+130.  ENDIF
+135.  END
+140.  EOF
+
+Lexical errors: 0
+Syntactic errors: 0
+Total errors: 0
